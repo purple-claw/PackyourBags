@@ -1,11 +1,17 @@
 const fs = require('fs');
+const catchAsync = require('./../utils/catchAsync');
+const User = require('./../models/userModel');
 
-exports.getAllUsers = (req,res) => {
-    res.status(500).json({
-        status : 'Internal Server error',
-        message : 'Route Yet Not Implemented'
+exports.getAllUsers = catchAsync(async (req,res,next) => {
+    const users = await User.find();
+    res.status(200).json({
+        status : "Success",
+        message : "Fetched User Succesfully",
+        data : {
+            users
+        }
     });
-};
+});
 
 exports.createUsers = (req,res) => {
     res.status(500).json({
