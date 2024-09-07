@@ -9,10 +9,16 @@ const app = express();
 app.use(morgan('dev'));
 app.use(express.json()); //Middleware for req.body
 app.use(express.static(`${__dirname}/public`)); //Middleware for Hosting Static Files.
+app.use((req,res,next) => {
+    req.requestTime = new Date().toISOString();
+    console.log(req.headers);
+    next();
+})
 
 //Error Handling Middleware
 const apperror = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
+app.use(globalErrorHandler);
 
 //Route handlers
 app.use('/api/v1/tours',tourRoutes);
@@ -22,6 +28,6 @@ app.all('*', (req,res,next) => {
     next(new apperror(`Cant FInd ${req.originalUrl} from the Routes`,404));
 });
 
-app.use(globalErrorHandler);
+
 
 module.exports = app;
